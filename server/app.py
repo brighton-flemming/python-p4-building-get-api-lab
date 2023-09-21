@@ -108,26 +108,33 @@ def baked_goods_by_price(price):
 
     return jsonify(baked_goods_list)
 
+
 @app.route('/baked_goods/most_expensive')
 def most_expensive_baked_good():
-      baked_goods=[]
-      baked_good = BakedGood.query.order_by(BakedGood.price.desc()).first()
+    baked_good = BakedGood.query.order_by(BakedGood.price.desc()).first()
 
-      baked_good_dict = {
-           "bakery_id": baked_good.bakery_id,
-             "created_at": baked_good.created_at,
-             "id": baked_good.id,
-             "name": baked_good.name,
-             "price": baked_good.price,
-             "updated_at": baked_good.updated_at
-      }
-      baked_goods.append(baked_good_dict)
+    if baked_good is None:
+        # Return a 404 Not Found response if no baked goods are found
+        return jsonify({"error": "No baked goods found"}), 404
 
-      response = make_response(
-        baked_good_dict, 200
-      )
+    bakery = {
+        "created_at": baked_good.bakery.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        "id": baked_good.bakery.id,
+        "name": baked_good.bakery.name,
+        "updated_at": baked_good.bakery.updated_at.strftime('%Y-%m-%d %H:%M:%S') if baked_good.bakery.updated_at else None
+    }
 
-      return response
+    baked_good_dict = {
+        "bakery": bakery,
+        "bakery_id": baked_good.bakery_id,
+        "created_at": baked_good.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+        "id": baked_good.id,
+        "name": baked_good.name,
+        "price": baked_good.price,
+        "updated_at": baked_good.updated_at.strftime('%Y-%m-%d %H:%M:%S') if baked_good.updated_at else None
+    }
+
+    return jsonify(baked_good_dict)
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
