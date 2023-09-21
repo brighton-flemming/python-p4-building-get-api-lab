@@ -16,9 +16,7 @@ with app.app_context():
     
     bakeries = []
     for i in range(20):
-        b = Bakery(
-            name=fake.company()
-        )
+        b = Bakery(name=fake.company(),)
         bakeries.append(b)
     
     db.session.add_all(bakeries)
