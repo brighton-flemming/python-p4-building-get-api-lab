@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+
 from flask import Flask, make_response, jsonify
 from flask_migrate import Migrate
 
@@ -13,6 +14,9 @@ app.json.compact = False
 migrate = Migrate(app, db)
 
 db.init_app(app)
+
+
+
 
 @app.route('/')
 def index():
@@ -39,17 +43,25 @@ def bakeries():
 
 @app.route('/bakeries/<int:id>')
 def bakery_by_id(id):
+    bakeries=[]
     bakery = Bakery.query.filter(Bakery.id == id).first()
 
-    bakery_dict = bakery.to_dict()
+    bakery_dict = {
+            "created_at": bakery.created_at,
+             "id": bakery.id,
+             "name": bakery.name,
+             "updated_at": bakery.updated_at
+          }
+    
+    bakeries.append(bakery_dict)
 
     response = make_response(
-        bakery_dict, 200
+        bakeries, 200
     )
 
     return response
 
-@app.route('/bakedgoods')
+@app.route('/baked_goods')
 def baked_goods():
     
     baked_goods = []
@@ -71,22 +83,39 @@ def baked_goods():
     return response
 
 @app.route('/baked_goods/by_price')
-def baked_goods_by_price(price):
-    baked_good = BakedGood.query.filter(BakedGood.price == price).first()
-
-    baked_good_dict = baked_good.to_dict()
+def baked_goods_by_price():
+    baked_goods=[]
+    baked_good = BakedGood.query.filter(BakedGood.price).first()
+    baked_good_dict = {
+            "bakery_id": baked_good.bakery_id,
+             "created_at": baked_good.created_at,
+             "id": baked_good.id,
+             "name": baked_good.name,
+             "price": baked_good.price,
+             "updated_at": baked_good.updated_at
+    }
+    baked_goods.append(baked_good_dict)
 
     response = make_response(
-        baked_good_dict, 200
+        baked_goods, 200
     )
 
     return response
 
 @app.route('/baked_goods/most_expensive')
 def most_expensive_baked_good():
+      baked_goods=[]
       baked_good = BakedGood.query.order_by(BakedGood.price.desc()).first()
 
-      baked_good_dict = baked_good.to_dict()
+      baked_good_dict = {
+           "bakery_id": baked_good.bakery_id,
+             "created_at": baked_good.created_at,
+             "id": baked_good.id,
+             "name": baked_good.name,
+             "price": baked_good.price,
+             "updated_at": baked_good.updated_at
+      }
+      baked_goods.append(baked_good_dict)
 
       response = make_response(
         baked_good_dict, 200
