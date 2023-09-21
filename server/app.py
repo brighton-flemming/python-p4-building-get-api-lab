@@ -49,6 +49,27 @@ def bakery_by_id(id):
 
     return response
 
+@app.route('/bakedgoods')
+def baked_goods():
+    
+    baked_goods = []
+    for baked_good in BakedGood.query.all():
+        baked_good_dict = {
+             "bakery_id": baked_good.bakery_id,
+             "created_at": baked_good.created_at,
+             "id": baked_good.id,
+             "name": baked_good.name,
+             "price": baked_good.price,
+             "updated_at": baked_good.updated_at
+        }
+        baked_goods.append(baked_good_dict)
+
+    response = make_response(
+        baked_goods, 200
+    )
+
+    return response
+
 @app.route('/baked_goods/by_price')
 def baked_goods_by_price(price):
     baked_good = BakedGood.query.filter(BakedGood.price == price).first()
