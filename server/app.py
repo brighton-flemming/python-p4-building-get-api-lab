@@ -82,10 +82,10 @@ def baked_goods():
 
     return response
 
-@app.route('/baked_goods/by_price')
-def baked_goods_by_price():
+@app.route('/baked_goods/<int:price>')
+def baked_goods_by_price(price):
     baked_goods=[]
-    baked_good = BakedGood.query.filter(BakedGood.price).first()
+    baked_good = BakedGood.query.filter(BakedGood.price == price).first()
     baked_good_dict = {
             "bakery_id": baked_good.bakery_id,
              "created_at": baked_good.created_at,
