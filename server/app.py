@@ -50,12 +50,28 @@ def bakery_by_id(id):
     return response
 
 @app.route('/baked_goods/by_price')
-def baked_goods_by_price():
-    return ''
+def baked_goods_by_price(price):
+    baked_good = BakedGood.query.filter(BakedGood.price == price).first()
+
+    baked_good_dict = baked_good.to_dict()
+
+    response = make_response(
+        baked_good_dict, 200
+    )
+
+    return response
 
 @app.route('/baked_goods/most_expensive')
 def most_expensive_baked_good():
-    return ''
+      baked_good = BakedGood.query.order_by(BakedGood.price.desc()).first()
+
+      baked_good_dict = baked_good.to_dict()
+
+      response = make_response(
+        baked_good_dict, 200
+      )
+
+      return response
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
