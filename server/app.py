@@ -82,25 +82,31 @@ def baked_goods():
 
     return response
 
-@app.route('/baked_goods/<int:price>')
+
+@app.route('/baked_goods/by_price/<float:price>')
 def baked_goods_by_price(price):
-    baked_goods=[]
-    baked_good = BakedGood.query.filter(BakedGood.price == price).first()
-    baked_good_dict = {
+    baked_goods = BakedGood.query.filter(BakedGood.price == price).all()
+
+    
+    baked_goods_list = []
+    for baked_good in baked_goods:
+        baked_good_dict = {
+            "bakery": {
+                "created_at": baked_good.bakery.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                "id": baked_good.bakery.id,
+                "name": baked_good.bakery.name,
+                "updated_at": baked_good.bakery.updated_at.strftime('%Y-%m-%d %H:%M:%S') if baked_good.bakery.updated_at else None
+            },
             "bakery_id": baked_good.bakery_id,
-             "created_at": baked_good.created_at,
-             "id": baked_good.id,
-             "name": baked_good.name,
-             "price": baked_good.price,
-             "updated_at": baked_good.updated_at
-    }
-    baked_goods.append(baked_good_dict)
+            "created_at": baked_good.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            "id": baked_good.id,
+            "name": baked_good.name,
+            "price": baked_good.price,
+            "updated_at": baked_good.updated_at.strftime('%Y-%m-%d %H:%M:%S') if baked_good.updated_at else None
+        }
+        baked_goods_list.append(baked_good_dict)
 
-    response = make_response(
-        baked_goods, 200
-    )
-
-    return response
+    return jsonify(baked_goods_list)
 
 @app.route('/baked_goods/most_expensive')
 def most_expensive_baked_good():
